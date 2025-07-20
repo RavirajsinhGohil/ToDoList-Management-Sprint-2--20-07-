@@ -1,0 +1,24 @@
+@model System.Exception
+
+@{
+    ViewData["Title"] = "Error";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="~/images/ToDoLogo.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+
+<body style="height: 100vh; width: 100vw; background-color: #bdc7cb;">
+    <h2>An error occurred !! Please try again.</h2>
+    <h4>Back To <a asp-controller="Dashboard" asp-action="Index" class="">Dashboard</a></h4>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+@using ToDoListManagement.Entity.ViewModel
+@model ToDoListManagement.Entity.ViewModel.EditEmployeeViewModel
+
+@{
+    ViewData["Title"] = "Update Employee";
+}
+
+<div class="container-fluid mt-2">
+
+    <div class="my-3">
+        <h2>Edit Employee</h2>
+    </div>
+
+    <form method="post" asp-controller="Employee" asp-action="UpdateEmployee" enctype="multipart/form-data">
+        <input type="hidden" asp-for="EmployeeId" />
+        <div class="row mx-0">
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating">
+                    <input type="text" class="form-control " asp-for="Name" id="floatingInput"
+                        placeholder="name@example.com">
+                    <label for="floatingInput">Name*</label>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mt-3 ps-0 mt-3">
+                <div class="form-floating">
+                    <input type="text" class="form-control " asp-for="PhoneNumber" id="floatingInput"
+                        placeholder="name@example.com">
+                    <label for="floatingInput">Phone Number*</label>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mx-0">
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating">
+                    <input type="email" class="form-control " asp-for="Email" id="exampleInput"
+                        aria-describedby="emailHelp" placeholder="Email" style="cursor: not-allowed;" readonly>
+                    <label for="floatingInput">Email*</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating">
+                    <select class="form-select add_user_input" style="height: 60px !important; cursor: pointer;"
+                        asp-for="Status" aria-label="Default select example">
+                        @if (Model.Status == "Active")
+                        {
+                            <option value="Active" selected>Active</option>
+                            <option value="Inactive">Inactive</option>
+                        }
+                        else if (Model.Status == "Inactive")
+                        {
+                            <option value="Inactive" selected>Inactive</option>
+                            <option value="Active">Active</option>
+                        }
+                    </select>
+                    <label class="fs-6" for="floatingInput">Status*</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mx-0">
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating ">
+                    <select class="form-select" style="height: 60px !important; cursor: pointer;" asp-for="Role">
+                        @if (Model.Roles != null && Model.Roles.Count > 0)
+                        {
+                            @foreach (RoleViewModel? role in Model.Roles)
+                            {
+                                if (role.RoleId == Model.Role)
+                                {
+                                    <option value="@role.RoleId" selected>@role.RoleName</option>
+                                }
+                                else
+                                {
+                                    <option value="@role.RoleId">@role.RoleName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label class="fs-6" for="Country">Role*</label>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="create_cancel_btn d-flex py-3">
+            <button type="submit" class="btn bg-secondary align-items-center text-white me-2">Save</button>
+            <button onclick="PageReload()" type="button"
+                class="btn border-secondary custom-blue-color">Cancel</button>
+        </div>
+    </form>
+
+</div>
+
+<script>
+    function PageReload() {
+        window.location.href = "/Employee/Index";
+    }
+</script>

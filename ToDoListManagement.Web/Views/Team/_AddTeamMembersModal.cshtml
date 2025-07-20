@@ -1,0 +1,41 @@
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+        <form id="addTeamMembersForm" data-bind="submit: submitAddMembersForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Team Members</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <select class="form-control"
+                        data-bind="value: addTeamMembersData.teamMember, options: addTeamMembersData.teamMembers, 
+                                       optionsValue: 'userId', optionsText: 'name', optionsCaption: 'Select a Team Member'">
+                    </select>
+                    <label for="pMAssignedTo">Team Member</label>
+                </div>
+                <button class=" form-control  text-start dropdown-toggle" type="button" style="height: 57px; !important"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="addMembersDropDownTitle">Select User(s)*</span>
+                </button>
+                <ul class="dropdown-menu w-50" aria-labelledby="notAssignedMembersDropdown">
+                    <div data-bind="foreach: addTeamMembersData.notAssignedMembers">
+                        <li>
+                            <label class="dropdown-item">
+                                <input type="checkbox" id="membersDropdownItem" data-bind="checkedValue: $data.employeeId, checked: $root.addTeamMembersData.selectedNotAssignedMembers, validationElement: false" />
+                                <label for="membersDropdownItem" data-bind="text: $data.name"></label>
+                            </label>
+                        </li>
+                    </div>
+                </ul>
+                <span class="validationMessage text-danger"
+                    data-bind="validationMessage: addTeamMembersData.selectedNotAssignedMembers"></span>
+            </div>
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

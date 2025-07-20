@@ -1,0 +1,29 @@
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+        <form id="addTeamMembersForm" data-bind="submit: submitChangeTeamMembersForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change Team Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" data-bind="value: editTeamMembersData.teamMember() ? editTeamMembersData.teamMember().name : ''" disabled />
+                    <label for="pMAssignedTo">Team Member</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-control"
+                        data-bind="value: editTeamMembersData.selectedTeamManager, options: editTeamMembersData.teamManagers,
+                                       optionsValue: 'userId', optionsText: 'name', optionsCaption: 'Select a Team Manager'">
+                    </select>
+                    <label for="pMAssignedTo">Team Manager*</label>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+@model ToDoListManagement.Entity.ViewModel.LoginViewModel
+
+@{
+  Layout = "~/Views/Shared/_AuthLayout.cshtml";
+  ViewData["Title"] = "Login";
+}
+
+<div class="card-body login-card-body">
+  <p class="login-box-msg">Login in to start your session</p>
+  <form asp-controller="Auth" asp-action="Login" method="post">
+    <div class="form-floating input_item mb-3">
+        <input type="email" class="form-control" id="email" style=" position: relative;;"
+            placeholder="name@example.com" asp-for="Email">
+        <label class="w-100" for="floatingInput">
+            <div class="d-flex justify-content-between">
+                <div>Email*</div>
+            </div>
+        </label>
+        <div style="position: absolute; right: 12px; top: 20px ;">
+            <img src="~/images/customer.svg" alt="">
+        </div>
+        <span class="text-danger" asp-validation-for="Email"></span>
+    </div>
+    <div class="form-floating input_item mb-3">
+        <input style="position: relative;" asp-for="Password" type="password" class="form-control"
+            id="password" placeholder="Password">
+        <i class="far fa-eye" id="togglePassword"
+            style=" cursor: pointer; position: absolute;  right: 12px; margin-top: -37px;"></i>
+        <label for="floatingPassword">Password*</label>
+        <span class="text-danger" asp-validation-for="Password"></span>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-8">
+        <div class="form-check" >
+          <input asp-for="RememberMe" class="form-check-input " style="cursor: pointer;" type="checkbox" id="RememberMe" />
+          <label class="form-check-label" for="RememberMe" style="cursor: pointer;" > Remember Me </label>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <p class="mb-1"><a href="#" id="forgotPasswordLink">I forgot my password</a></p>
+  <p class="mb-0">
+    <a asp-controller="Auth" asp-action="Register" class="text-center"> Register a new membership </a>
+  </p>
+</div> 
+
+<script src="~/js/LoginView.js"></script>

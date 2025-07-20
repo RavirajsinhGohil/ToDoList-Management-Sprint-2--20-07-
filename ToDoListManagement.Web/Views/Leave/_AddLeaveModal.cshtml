@@ -1,0 +1,115 @@
+@{
+    string baselineDate = DateTime.Today.ToString("yyyy-MM-dd");
+}   
+
+<div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+
+        <form id="addLeaveForm" data-bind="submit: submitAddLeaveForm">
+            <input type="hidden" value="@Model.RequestedUserId" data-bind="value: addLeaveData.leaveUserId" />
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Leave</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" placeholder="Name"
+                                data-bind="value: addLeaveData.requestedName" maxlength="50" disabled>
+                            <label for="addRequestedName">Name*</label>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="addLeaveReportingPerson" disabled
+                                data-bind="value: addLeaveData.approvalName" placeholder="Name">
+                            <label for="addLeaveReportingPerson">Reporting Person*</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" placeholder="Description"
+                                data-bind="value: addLeaveData.reason" style="height: 90px;"></textarea>
+                            <label for="addLeaveReason">Reason*</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" placeholder="Reporting Person"
+                                id="addLeaveStartDate"
+                                data-bind="value: addLeaveData.startDate"
+                                min="@baselineDate" />
+                            <label for="addLeaveStartDate">Start Date*</label>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control "
+                                data-bind="value: addLeaveData.endDate"
+                                id="addLeaveEndDate" placeholder="Start Date" min="@baselineDate" />
+                            <label for="addLeaveEndDate">End Date*</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control " data-bind="value: addLeaveData.returnDate"
+                                id="addLeaveReturnDate" placeholder="Start Date" disabled />
+                            <label for="addLeaveReturnDate">Return Date</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: addLeaveData.duration" class="form-control"
+                                placeholder="Duration" disabled />
+                            <label for="">Duration</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: addLeaveData.phoneNumber" class="form-control"
+                                maxlength="10" placeholder="Duration" />
+                            <label for="">Phone Number*</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: addLeaveData.alternatePhoneNumber" class="form-control"
+                                maxlength="10" placeholder="Duration" />
+                            <label for="">Alternate Phone Number</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <select class="form-control" data-bind="value: addLeaveData.availableOnPhone, options: availableOnPhoneOptions, optionsValue: 'id', optionsText: 'name'" aria-label="Priority"></select>
+                            <label for="pMAssignedTo">Available On Phone</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

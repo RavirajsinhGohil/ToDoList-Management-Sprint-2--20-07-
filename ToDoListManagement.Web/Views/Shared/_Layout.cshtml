@@ -1,0 +1,316 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Text.Json
+@using System.Security.Claims
+@using ToDoListManagement.Entity.ViewModel
+@using static ToDoListManagement.Service.Helper.CustomAuthorize
+@{
+  UserViewModel? user = ViewBag.SessionUser as ToDoListManagement.Entity.ViewModel.UserViewModel;
+  Claim? permissionsClaim = User.Claims.FirstOrDefault(c => c.Type == "Permissions");
+
+  List<PermissionClaim> permissions = new List<PermissionClaim>();
+  if (permissionsClaim != null)
+  {
+    permissions = JsonSerializer.Deserialize<List<PermissionClaim>>(permissionsClaim?.Value ?? "[]") ?? new
+    List<PermissionClaim>();
+  }
+
+  Func<string, bool> hasPermissionToView = (permissionName) =>
+  {
+    PermissionClaim? permission = permissions.FirstOrDefault(p => p.PermissionName == permissionName);
+    return permission != null && permission.CanView;
+  };
+}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>@ViewData["Title"] - ToDo List Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="~/images/ToDoLogo.png">
+  <meta name="title" content="AdminLTE 4 | Fixed Sidebar" />
+  <meta name="author" content="ColorlibHQ" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+    integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="~/css/adminlte.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  @* <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> *@
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout-validation/2.0.4/knockout.validation.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  </link>
+  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <script src="https://adminlte.io/themes/v3/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://adminlte.io/themes/v3/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="https://adminlte.io/themes/v3/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+
+  <link href="https://cdn.datatables.net/searchpanes/2.3.0/css/searchPanes.dataTables.min.css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css" rel="stylesheet" />
+
+  <script src="https://cdn.datatables.net/searchpanes/2.3.0/js/dataTables.searchPanes.min.js"></script>
+  <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-searchpanes/2.3.3/dataTables.searchPanes.min.js"></script>
+
+  <script src="https://cdn.tiny.cloud/1/ldg6ynw66ccn0bxrwl7em3tp3rytyx7kd8jkvnefizwlz9ty/tinymce/6/tinymce.min.js"
+    referrerpolicy="origin"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+  <script src="~/js/site.js"></script>
+
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <partial name="_Toaster" />
+  <div class="app-wrapper">
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="btn-dark">
+      <div class="sidebar-brand">
+        <div class="brand-link">
+          <a asp-controller="Dashboard" asp-action="Index" style="text-decoration: none">
+            <img class="" width="35" src="~/images/ToDoLogo.png">
+            <span class="brand-text fw-light">ToDo List Management</span>
+          </a>
+        </div>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <li class="nav-item sidebar_btn" data-id="/dashboard">
+              <a asp-controller="Dashboard" asp-action="Index" class="nav-link">
+                <i class="nav-icon fa-solid fa-house"></i>
+                <p>
+                  Dashboard
+                </p>
+              </a>
+            </li>
+            @if (hasPermissionToView("Projects"))
+            {
+              <li class="nav-item sidebar_btn" data-id="/project">
+                <a asp-controller="Project" asp-action="Index" class="nav-link">
+                  <i class="nav-icon fa-solid fa-table-list"></i>
+                  <p>
+                    Projects
+                  </p>
+                </a>
+              </li>
+            }
+            @if (hasPermissionToView("Employees"))
+            {
+              <li class="nav-item sidebar_btn" data-id="/employee">
+                <a asp-controller="Employee" asp-action="Index" class="nav-link text-center">
+                  <i class="nav-icon fa-solid fa-users"></i>
+                  <p>
+                    Employees
+                  </p>
+                </a>
+              </li>
+            }
+            @if (hasPermissionToView("Task Board"))
+            {
+
+              <li class="nav-item sidebar_btn" data-id="/tasks">
+                <a asp-controller="Tasks" asp-action="Index" class="nav-link">
+                  <i class="nav-icon fa-solid fa-clipboard"></i>
+                  <p>
+                    Task Board
+                  </p>
+                </a>
+              </li>
+            }
+            @if (hasPermissionToView("Role And Permissions"))
+            {
+              <li class="nav-item sidebar_btn" data-id="/roleAndPermission">
+                <a asp-controller="RoleAndPermission" asp-action="Roles" class="nav-link">
+                  <i class="nav-icon fa-solid fa-user-gear"></i>
+                  <p>
+                    Roles - Permissions
+                  </p>
+                </a>
+              </li>
+            }
+
+            @if (hasPermissionToView("Self Leave") || hasPermissionToView("Team Leave"))
+            {
+              <li class="nav-item" data-id="/leave">
+                <div class="dropdown">
+                  <button class="btn dropdown-toggle shadow-none d-flex align-items-center w-100" type="button"
+                    id="leaveDropDownBtn" style="background-color:transparent" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="nav-icon fa-solid fa-clipboard-list"></i>
+                    <span class="ps-2">Leave</span>
+                  </button>
+                  <ul class="dropdown-menu w-100 dropdown-menu-dark" id="dropdownLinks">
+                    @if (hasPermissionToView("Self Leave"))
+                    {
+                      <li><a asp-controller="Leave" asp-action="SelfLeave" class="text-white dropdown-item "
+                          data-id="/leave/selfleave">
+                          <p class="m-0">
+                            Self Leave
+                          </p>
+                        </a>
+                      </li>
+                    }
+                    @if (hasPermissionToView("Team Leave"))
+                    {
+                      <li>
+                        <a asp-controller="Leave" asp-action="TeamLeave" class="text-white dropdown-item "
+                          data-id="/leave/teamleave">
+                          <p class="m-0">
+                            Team Leave
+                          </p>
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </li>
+            }
+            <li class="nav-item sidebar_btn" data-id="/team">
+              <a asp-controller="Team" asp-action="Index" class="nav-link">
+                <i class="nav-icon fa-solid fa-user-gear"></i>
+                <p>
+                  Manage Team
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+    <main class="app-main">
+      <nav class="app-header navbar navbar-expand bg-body">
+        <div class="container-fluid">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link " data-lte-toggle="sidebar" href="#" role="button">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link " href="#" data-lte-toggle="fullscreen">
+                <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+              </a>
+            </li>
+            <li>
+              @if (user?.Name != null)
+              {
+              <li class="nav-item dropdown user-menu">
+                <a href="#" class="nav-link d-flex dropdown-toggle" data-bs-toggle="dropdown">
+                  <div
+                    class="list-inline-item rounded-circle text-bg-warning d-flex justify-content-center align-items-center"
+                    style="width: 25px;">
+                    @user.Name.ToString().Substring(0, 1).ToUpper()
+                  </div>
+                  <span class="d-none d-md-inline">@user.Name</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                  <li class="user-header text-bg-secondary" style="min-height: 75px !important;">
+                    <p>
+                      @user.Name
+                    </p>
+                  </li>
+                  <li class="user-footer">
+                    <a asp-controller="Profile" asp-action="Index" class="btn btn-default btn-flat border-secondary">
+                      <i class="fa-solid fa-user"></i>
+                      Profile
+                    </a>
+                    <button data-bs-toggle="modal" data-bs-target="#logoutModal"
+                      class="btn btn-default btn-flat float-end border-secondary">
+                      <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            }
+            </li>
+          </ul>
+        </div>
+      </nav>
+      @RenderBody()
+    </main>
+  </div>
+
+  <!-- Logout Modal  -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered justify-content-center custom-modal-size">
+      <div class="modal-content ">
+        <div class="modal-header border-none">
+          <h5 class="modal-title text-center" id="exampleModalLabel">Logout Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center d-flex align-items-center justify-content-center flex-column">
+          <div class="d-flex align-items-center justify-content-center">
+            <img src="~/images/toppng.com-warning-icon-2400x2400.png"
+              style="height: 100px !important; width: 100px; !important"></img>
+          </div>
+          <div>Are you sure you want to Logout?</div>
+        </div>
+        <div class="modal-footer border-none pt-0 d-flex justify-content-center">
+          <div class="mt-3">
+            <a asp-controller="Auth" asp-action="Logout" class="btn btn-dark btn-flat">Yes</a>
+            <button type="button" class="btn custom-blue-border bg-white border-dark custom-blue-color ms-1"
+              data-bs-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+  <script src="~/js/adminlte.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      var path = window.location.pathname.toLowerCase();
+
+      // Handle regular sidebar links (Projects, Employees, etc.)
+      $('.sidebar_btn').each(function () {
+        var target = $(this).data('id')?.toLowerCase();
+        if (path.startsWith(target)) {
+          $(this).find('.nav-link').addClass('active');
+        } else {
+          $(this).find('.nav-link').removeClass('active');
+        }
+      });
+
+      $('#dropdownLinks a').each(function () {
+        var target = $(this).data('id')?.toLowerCase();
+        if (path === target) {
+          $(this).addClass('active');
+          $('#leaveDropDownBtn').addClass('show');
+
+          $('#dropdownLinks').addClass('show');
+
+          $('li.nav-item[data-id="/leave"] > .dropdown > button').addClass('active');
+        } else {
+          $(this).removeClass('active');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

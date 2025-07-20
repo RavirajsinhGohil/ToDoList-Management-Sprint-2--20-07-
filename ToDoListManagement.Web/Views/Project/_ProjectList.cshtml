@@ -1,0 +1,35 @@
+@using ToDoListManagement.Entity.ViewModel
+@model List<ToDoListManagement.Entity.ViewModel.ProjectViewModel>
+
+@{
+    bool canAddEdit = GetPermissionService.HasPermission(User, "Projects", "CanAddEdit");
+    bool canDelete = GetPermissionService.HasPermission(User, "Projects", "CanDelete");
+}
+
+<table class="table table-striped projects" id="projectTable">
+    <thead>
+        <tr>
+            <th style="width: 2%">
+                #
+            </th>
+            <th style="width: 25%">
+                Project Name
+            </th>
+            <th style="width: 15%">
+                Program Manager
+            </th>
+            <th style="width: 25%">
+                Team Members
+            </th>
+            <th style="width: 8%">
+                Status
+            </th>
+            @if (canAddEdit || canDelete)
+            {
+                <th style="width: 25%">
+                    Action
+                </th>
+            }
+        </tr>
+    </thead>
+</table>

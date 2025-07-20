@@ -1,0 +1,129 @@
+@{
+    string baselineDate = DateTime.Today.ToString("yyyy-MM-dd");
+    bool isTeamLeave = ViewData["IsTeamLeave"] != null && (bool)ViewData["IsTeamLeave"];
+}
+
+<div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+        <form id="editLeaveForm" data-bind="submit: submitEditLeaveForm">
+            <input type="hidden" data-bind="value: editLeaveData.leaveId" />
+            <input type="hidden" data-bind="value: editLeaveData.requestedId" />
+            <input type="hidden" data-bind="value: editLeaveData.approvalId" />
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Leave</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: editLeaveData.requestedName" class="form-control" maxlength="50" disabled 
+                                placeholder="Reporting Person" />
+                            <label for="addRequestedName">Name*</label>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: editLeaveData.approvalName" class="form-control" maxlength="50" disabled
+                                placeholder="Reporting Person">
+                            <label for="addLeaveReportingPerson">Reporting Person*</label>
+                        </div>  
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" placeholder="Description"
+                                data-bind="value: editLeaveData.reason" style="height: 90px;"></textarea>
+                            <label for="addLeaveReason">Reason*</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" data-bind="value: editLeaveData.startDate" class="form-control" id="editLeaveStartDate" placeholder="Reporting Person" min="@baselineDate" />
+                            <label for="editLeaveStartDate">Start Date*</label>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" data-bind="value: editLeaveData.endDate" class="form-control" id="editLeaveEndDate" placeholder="Start Date" min="@baselineDate" />
+                            <label for="editLeaveEndDate">End Date*</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control " data-bind="value: editLeaveData.returnDate"
+                                id="addLeaveReturnDate" placeholder="Start Date" disabled />
+                            <label for="addLeaveReturnDate">Return Date</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: editLeaveData.duration" class="form-control" placeholder="Reporting Person" disabled />
+                            <label for="addTaskStartDate">Duration</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: editLeaveData.phoneNumber" class="form-control"
+                                maxlength="10" placeholder="Duration" />
+                            <label for="">Phone Number*</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" data-bind="value: editLeaveData.alternatePhoneNumber" class="form-control"
+                                maxlength="10" placeholder="Duration" />
+                            <label for="">Alternate Phone Number</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <select class="form-control" data-bind="value: editLeaveData.availableOnPhone, options: availableOnPhoneOptions, optionsText: 'name', optionsValue: 'id'" aria-label="Priority"></select>
+                            <label for="pMAssignedTo">Available On Phone</label>
+                            <span  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <select class="form-control" data-bind="value: editLeaveData.status, options: statusOptions, optionsValue: 'name', optionsText: 'name'," aria-label="Priority"></select>
+                            <label for="pMAssignedTo">Status</label>
+                            <span  class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <textarea type="text" data-bind="value: editLeaveData.commentByApproval" class="form-control" maxlength="100" style="height: 90px;"
+                                placeholder="Comment" ></textarea>
+                            <label for="comment">Comment By Approval</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

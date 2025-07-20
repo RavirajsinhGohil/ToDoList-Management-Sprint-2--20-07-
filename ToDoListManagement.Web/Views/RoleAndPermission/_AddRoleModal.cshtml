@@ -1,0 +1,30 @@
+@model ToDoListManagement.Entity.ViewModel.RoleViewModel
+
+<div class="modal-dialog modal-dialog-centered ">
+    <div class="modal-content">
+        <form id="addTaskForm" asp-controller="RoleAndPermission" asp-action="AddRole" method="post"
+            enctype="multipart/form-data">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Role
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="RoleName" type="text" class="form-control" id="addTitle" placeholder="Name">
+                            <label for="categoryname">Role Name*</label>
+                            <span asp-validation-for="RoleName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn ms-1 btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

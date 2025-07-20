@@ -1,0 +1,72 @@
+@model ToDoListManagement.Entity.ViewModel.ProjectViewModel
+
+@{
+    string baselineDate = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <form id="addProjectForm" asp-controller="Project" asp-action="AddProject" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Project
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input asp-for="ProjectName" type="text" class="form-control" id="addProjectName"
+                        placeholder="Name">
+                    <label for="addProjectName">Name*</label>
+                    <span asp-validation-for="ProjectName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="pMAssignedTo" asp-for="AssignedToProgramManager"
+                        asp-items="@(Model.ProjectManagers.Select(u => new SelectListItem { Value = u.UserId.ToString(), Text = u.Name }))"
+                        aria-label="Assigned To">
+                        <option value="">Select Program Manager</option>
+                    </select>
+                    <label for="pMAssignedTo">Assigned PM*</label>
+                    <span asp-validation-for="AssignedToProgramManager" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="sMAssignedTo" asp-for="AssignedToScrumMaster"
+                        asp-items="@(Model.ScrumMasters.Select(u => new SelectListItem { Value = u.UserId.ToString(), Text = u.Name }))"
+                        aria-label="Assigned To">
+                        <option value="">Select Scrum Master</option>
+                    </select>
+                    <label for="sMAssignedTo">Assigned SM*</label>
+                    <span asp-validation-for="AssignedToScrumMaster" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control dateFilter" id="addProjectStartDate"
+                        asp-for="StartDate" min="@baselineDate" placeholder="Start Date">
+                    <label for="floatingInput">Start Date*</label>
+                    <span class="text-danger" asp-validation-for="StartDate" id="toDateValidation"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control dateFilter" id="addProjectDueDate" asp-for="EndDate"
+                        min="@baselineDate" placeholder="dueDate">
+                    <label for="floatingInput">Due Date*</label>
+                    <span class="text-danger" asp-validation-for="EndDate" id="toDateValidation"></span>
+                </div>
+
+                <div class="form-floating">
+                    <textarea class="form-control" id="addProjectDescription" placeholder="Description"
+                        asp-for="Description" style="height: 90px;"></textarea>
+                    <label for="addProjectDescription">Description</label>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+@model ToDoListManagement.Entity.ViewModel.SprintViewModel
+
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <form id="addSprintForm" asp-controller="Tasks" asp-action="AddSprint" method="post">
+            <input type="hidden" value="@Model.ProjectId" asp-for="ProjectId">
+            <input type="hidden" value="@Model.ScrumMasterId" asp-for="ScrumMasterId">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Sprint
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input asp-for="Name" type="text" class="form-control" id="addTitle" placeholder="Name">
+                    <label for="categoryname">Name*</label>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" id="addSprintDescription" placeholder="Description"
+                        asp-for="Description" style="height: 90px;"></textarea>
+                    <label for="addSprintDescription">Description</label>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

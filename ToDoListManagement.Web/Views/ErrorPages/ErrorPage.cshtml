@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Error Page" ;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="~/images/ToDoLogo.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+
+<body class="" style="height: 100vh; width: 100vw; background-color: #bdc7cb;">
+    <div class="errorPageHeader d-flex align-items-center justify-content-center" style=" height: 20vh; width: 100vw;">
+        <div class=" fs-5 " style="font-size: 3rem !important;">ToDo List Management</div>
+    </div>
+    <div class="errorPageBody  fw-bold d-flex align-items-center justify-content-center" style="font-size: 200px;">
+        @ViewData["StatusCode"]
+    </div>
+    <div class="errorPageFooter d-flex align-items-center justify-content-center flex-column mt-5">
+        <div class="text-secondary fs-4 mb-4">@ViewData["StatusHeader"]</div>
+        <div class=" ">@ViewData["StatusMessage"]</div>
+        <h4>Back To <a asp-controller="Dashboard" asp-action="Index" class="">Dashboard</a></h4>
+    </div>    
+</body>
+
+</html>

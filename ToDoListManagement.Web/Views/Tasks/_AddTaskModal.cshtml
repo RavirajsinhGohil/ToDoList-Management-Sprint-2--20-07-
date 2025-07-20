@@ -1,0 +1,165 @@
+@using ToDoListManagement.Entity.ViewModel
+@model ToDoListManagement.Entity.ViewModel.TaskViewModel
+
+@{
+    DateTime baselineDate = DateTime.Today;
+
+    DateTime minDate = Model.ProjectStartDate >= baselineDate ? Model.ProjectStartDate : baselineDate;
+    DateTime maxDate = Model.ProjectEndDate >= minDate ? Model.ProjectEndDate : minDate;
+
+    string minDateStr = minDate.ToString("yyyy-MM-dd");
+    string maxDateStr = maxDate.ToString("yyyy-MM-dd");
+}
+
+<div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+        <form id="addTaskForm" method="post" enctype="multipart/form-data">
+            <input type="hidden" value="@Model.ProjectId" asp-for="ProjectId">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Task
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Title" type="text" class="form-control" id="addTitle" placeholder="Name">
+                            <label for="categoryname">Title*</label>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" asp-for="Priority" aria-label="Priority">
+                                <option value="" selected>Select a Priority</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                            <label for="pMAssignedTo">Priority*</label>
+                            <span asp-validation-for="Priority" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3 form-group">
+                            <select class="form-select select2" id="assignedTo" asp-for="AssignedTo"
+                                asp-items="@(Model.TeamMembers.Select(u => new SelectListItem { Value = u.UserId.ToString(), Text = u.Name }))"
+                                aria-label="Assigned To">
+                                <option value="">Select a Team Member</option>
+                            </select>
+                            <label for="pMAssignedTo">Assigned To</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        
+                            <div class="form-floating">
+                                <select class="form-select" id="sprintDropDown" asp-for="SprintId">
+                                    <option value="" selected>Backlog</option>
+                                    @if (Model.Sprints != null && Model.Sprints.Any())
+                                    {
+                                        @foreach (SprintViewModel? sprint in Model.Sprints)
+                                        {
+                                            <option value="@sprint.SprintId">
+                                                @sprint.Name
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <label class="fs-6" for="sprintDropDown">Sprint</label>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control dateFilter" id="addTaskStartDate" asp-for="CreatedOn" disabled placeholder="Start Date" />
+                            <label for="addTaskStartDate">Start Date</label>
+                            <span class="text-danger" asp-validation-for="CreatedOn" id="toDateValidation"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control dateFilter" id="addTaskDueDate" asp-for="DueDate" disabled placeholder="Due Date" />
+                            <label for="addTaskDueDate">Due Date</label>
+                            <span class="text-danger" asp-validation-for="DueDate" id="toDateValidation"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class=" mb-3 position-relative">
+                    <textarea class="form-control" id="addTaskDescription" placeholder="Description" maxlength="1000"
+                        asp-for="Description" style="height: 90px;"></textarea>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center w-100 p-0 "
+                    style="height: 90px !important;">
+                    <button type="button"
+                        class="btn border w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-white"
+                        onclick="openAddTaskInputFile()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span id="BrowseFileSpan">Browse file</span>
+                    </button>
+                    <input id="addTaskInputFile" asp-for="TaskDetails" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                        class="d-none" type="file" multiple>
+                </div>
+
+                <div id="addTaskFileNamesList" style="flex-wrap: wrap;" class="mt-2 d-flex"></div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    tinymce.init({
+        selector: '#addTaskDescription',
+        height: 300,
+        menubar: false,
+        plugins: 'lists link image',
+        toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist ',
+        branding: false,
+        statusbar: false,
+        setup: function (editor) {
+            const maxLength = 1000;
+
+            editor.on('keydown', function (e) {
+                const content = editor.getContent({ format: 'text' });
+
+                const navigationalKeys = [
+                    'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+                    'ArrowUp', 'ArrowDown', 'Control', 'Meta', 'Alt'
+                ];
+
+                if (content.length >= maxLength && !navigationalKeys.includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            editor.on('blur', function (e) {
+                const content = editor.getContent({ format: 'text' });
+
+                const navigationalKeys = [
+                    'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+                    'ArrowUp', 'ArrowDown', 'Control', 'Meta', 'Alt'
+                ];
+
+                if (content.length >= maxLength && !navigationalKeys.includes(e.key)) {
+                    editor.setContent(content.substring(0, 1000), { format: 'raw' });
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        }
+    });
+</script>

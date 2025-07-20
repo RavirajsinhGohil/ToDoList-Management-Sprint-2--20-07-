@@ -1,0 +1,23 @@
+<div class="container-fluid">
+    <section class="content-header my-3">
+        <div class="d-flex justify-content-between">
+            <h2>Team Hierarchy</h2>
+        </div>
+    </section>
+</div>
+<div id="hierarchy">
+    <div data-bind="foreach: teams">
+        <div class="node">
+            <span data-bind="click: toggle">
+                <span data-bind="text: collapsed() ? '+' : '-'"></span>
+            </span>
+            <span data-bind="text: name"></span>
+            
+            <div class="children" data-bind="visible: !collapsed(), foreach: children">
+                <div class="node">
+                    <span data-bind="text: name"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

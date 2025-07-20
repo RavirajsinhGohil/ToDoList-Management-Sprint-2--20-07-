@@ -1,0 +1,52 @@
+@{
+    bool canTeamAddEdit = GetPermissionService.HasPermission(User, "Team Leave", "CanAddEdit");
+    bool canTeamDelete = GetPermissionService.HasPermission(User, "Team Leave", "CanDelete");
+
+    bool canSelfAddEdit = GetPermissionService.HasPermission(User, "Self Leave", "CanAddEdit");
+    bool canSelfDelete = GetPermissionService.HasPermission(User, "Self Leave", "CanDelete");
+
+    bool isTeamLeave = ViewData["IsTeamLeave"] != null && (bool)ViewData["IsTeamLeave"];
+}
+
+<table class="table table-striped projects" id="leaveTable">
+    <thead>
+        <tr>
+            @if (isTeamLeave)
+            {
+                <th>
+                    Employee Name
+                </th>
+            }
+            <th>
+                Start Date
+            </th>
+            <th>
+                End Date
+            </th>
+            <th>
+                Reason
+            </th>
+            <th>
+                Duration
+            </th>
+            <th>
+                Return Date
+            </th>
+            <th>
+                Available On Phone
+            </th>
+            <th>
+                Approved Date
+            </th>
+            <th>
+                Status
+            </th>
+            @if((!isTeamLeave && (canSelfAddEdit || canSelfDelete)) || (isTeamLeave && (canTeamAddEdit || canTeamDelete)))
+            {
+                <th>
+                    Actions
+                </th>
+            }
+        </tr>
+    </thead>
+</table>

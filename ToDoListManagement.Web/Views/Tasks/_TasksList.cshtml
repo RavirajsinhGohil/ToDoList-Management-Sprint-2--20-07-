@@ -1,0 +1,288 @@
+@using ToDoListManagement.Entity.ViewModel
+@model List<ToDoListManagement.Entity.ViewModel.TaskViewModel>
+
+@{
+    bool canAddEdit = GetPermissionService.HasPermission(User, "Task Board", "CanAddEdit");
+    bool canDelete = GetPermissionService.HasPermission(User, "Task Board", "CanDelete");
+}
+
+<div class="content-wrapper kanban">
+    <section class="content my-3">
+        <div class="container-fluid row h-100 w-100 m-0 p-0 d-flex justify-content-between g-2">
+            <div class="col-lg-3 col-md-2 p-0 card card-row card-secondary" style="height: 55vh;">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        To Do
+                    </h3>
+                </div>
+                <div class=" card-body task-column" data-status="To Do">
+                    @foreach (TaskViewModel? task in Model)
+                    {
+                        if (task.Status == "To Do")
+                        {
+                            string? priorityClass = string.Empty;
+                            @switch (task.Priority)
+                            {
+                                case "High":
+                                    priorityClass = "border-danger";
+                                    break;
+                                case "Medium":
+                                    priorityClass = "border-warning";
+                                    break;
+                                case "Low":
+                                    priorityClass = "border-success";
+                                    break;
+                                default:
+                                    priorityClass = "border-secondary";
+                                    break;
+                            }
+                            <div class="card @priorityClass mb-3 shadow-sm task-card" data-task-id="@task.TaskId"
+                                style="cursor: pointer;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <p class="mb-1"><strong>Title:</strong> @task.Title</p>
+                                        </div>
+                                        <div>
+                                            <a onclick="openViewTaskModal(@task.TaskId)"
+                                                class="btn btn-secondary btn-sm text-white me-1" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            @if (canAddEdit)
+                                            {
+                                                <a onclick="openEditTaskModal(@task.TaskId)"
+                                                    class="btn btn-info btn-sm text-white me-1" title="Edit">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                            }
+                                            @if (canDelete)
+                                            {
+                                                <a onclick="openDeleteTaskModal(@task.TaskId)" class="btn btn-danger btn-sm"
+                                                    title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <p class="mb-1"><strong>Description:</strong> @Html.Raw(task.Description)</p>
+                                    </div>
+
+                                    @if (task.TeamMembers != null && task.TeamMembers.Any())
+                                    {
+                                        string? assignedTo = task.TeamMembers.FirstOrDefault(tm => tm.UserId ==
+                                        task.AssignedTo)?.Name;
+                                        <p class="mb-0"><strong>Assigned To:</strong> @assignedTo</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-2 p-0 card card-row card-primary" style="height: 55vh;">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        In Progress
+                    </h3>
+                </div>
+                <div class=" card-body task-column" data-status="In Progress">
+                    @foreach (TaskViewModel task in Model)
+                    {
+                        if (task.Status == "In Progress")
+                        {
+                            string? priorityClass = string.Empty;
+                            @switch (task.Priority)
+                            {
+                                case "High":
+                                    priorityClass = "border-danger";
+                                    break;
+                                case "Medium":
+                                    priorityClass = "border-warning";
+                                    break;
+                                case "Low":
+                                    priorityClass = "border-success";
+                                    break;
+                                default:
+                                    priorityClass = "border-secondary";
+                                    break;
+                            }
+                            <div class="card @priorityClass mb-3 shadow-sm task-card" data-task-id="@task.TaskId"
+                                style="cursor: pointer;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <p class="mb-1"><strong>Title:</strong> @task.Title</p>
+                                        </div>
+                                        <div>
+                                            <a onclick="openViewTaskModal(@task.TaskId)"
+                                                class="btn btn-secondary btn-sm text-white me-1" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            @if (canAddEdit)
+                                            {
+                                                <a onclick="openEditTaskModal(@task.TaskId)"
+                                                    class="btn btn-info btn-sm text-white me-1" title="Edit">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                            }
+                                            @if (canDelete)
+                                            {
+                                                <a onclick="openDeleteTaskModal(@task.TaskId)" class="btn btn-danger btn-sm"
+                                                    title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <p class="mb-1"><strong>Description:</strong> @Html.Raw(task.Description)</p>
+                                    </div>
+
+                                    @if (task.TeamMembers != null && task.TeamMembers.Any())
+                                    {
+                                        string? assignedTo = task.TeamMembers.FirstOrDefault(tm => tm.UserId ==
+                                        task.AssignedTo)?.Name;
+                                        <p class="mb-0"><strong>Assigned To:</strong> @assignedTo</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-2 p-0 card card-row card-default" style="height: 55vh;">
+                <div class="card-header bg-info">
+                    <h3 class="card-title text-white">
+                        Testing
+                    </h3>
+                </div>
+                <div class=" card-body task-column" data-status="Testing">
+                    @foreach (TaskViewModel task in Model)
+                    {
+                        if (task.Status == "Testing")
+                        {
+                            string? priorityClass = string.Empty;
+                            @switch (task.Priority)
+                            {
+                                case "High":
+                                    priorityClass = "border-danger";
+                                    break;
+                                case "Medium":
+                                    priorityClass = "border-warning";
+                                    break;
+                                case "Low":
+                                    priorityClass = "border-success";
+                                    break;
+                                default:
+                                    priorityClass = "border-secondary";
+                                    break;
+                            }
+                            <div class="card @priorityClass mb-3 shadow-sm task-card" data-task-id="@task.TaskId"
+                                style="cursor: pointer;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <p class="mb-1"><strong>Title:</strong> @task.Title</p>
+                                        </div>
+                                        <div>
+                                            <a onclick="openViewTaskModal(@task.TaskId)"
+                                                class="btn btn-secondary btn-sm text-white me-1" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            @if (canAddEdit)
+                                            {
+                                                <a onclick="openEditTaskModal(@task.TaskId)"
+                                                    class="btn btn-info btn-sm text-white me-1" title="Edit">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                            }
+                                            @if (canDelete)
+                                            {
+                                                <a onclick="openDeleteTaskModal(@task.TaskId)" class="btn btn-danger btn-sm"
+                                                    title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <p class="mb-1"><strong>Description:</strong> @Html.Raw(task.Description)</p>
+                                    </div>
+
+                                    @if (task.TeamMembers != null && task.TeamMembers.Any())
+                                    {
+                                        string? assignedTo = task.TeamMembers.FirstOrDefault(tm => tm.UserId ==
+                                        task.AssignedTo)?.Name;
+                                        <p class="mb-0"><strong>Assigned To:</strong> @assignedTo</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-2 p-0 card card-row card-success" style="height: 55vh;">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Done
+                    </h3>
+                </div>
+                <div class="card-body task-column" data-status="Done">
+                    @foreach (TaskViewModel task in Model)
+                    {
+                        if (task.Status == "Done")
+                        {
+                            string? priorityClass = string.Empty;
+                            @switch (task.Priority)
+                            {
+                                case "High":
+                                    priorityClass = "border-danger";
+                                    break;
+                                case "Medium":
+                                    priorityClass = "border-warning";
+                                    break;
+                                case "Low":
+                                    priorityClass = "border-success";
+                                    break;
+                                default:
+                                    priorityClass = "border-secondary";
+                                    break;
+                            }
+                            <div class="card @priorityClass mb-3 shadow-sm task-card" data-task-id="@task.TaskId"
+                                style="cursor: pointer;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <p class="mb-1"><strong>Title:</strong> @task.Title</p>
+                                        </div>
+                                        <div>
+                                            <a onclick="openViewTaskModal(@task.TaskId)"
+                                                class="btn btn-secondary btn-sm text-white me-1" title="View">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <p class="mb-1"><strong>Description:</strong> @Html.Raw(task.Description)</p>
+                                    </div>
+
+                                    @if (task.TeamMembers != null && task.TeamMembers.Any())
+                                    {
+                                        string? assignedTo = task.TeamMembers.FirstOrDefault(tm => tm.UserId ==
+                                        task.AssignedTo)?.Name;
+                                        <p class="mb-0"><strong>Assigned To:</strong> @assignedTo</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

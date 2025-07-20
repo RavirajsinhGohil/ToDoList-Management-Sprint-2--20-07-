@@ -1,0 +1,37 @@
+<div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+        <form id="assignMembersForm" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Assign Members</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-striped projects" id="assignTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">
+                                <input class="form-check-input" id="addExistingForEditMainCheck" type="checkbox" value="">
+                            </th>
+                            <th style="width: 30%">
+                                Name
+                            </th>
+                            <th style="width: 30%">
+                                Email
+                            </th>
+                            <th style="width: 30%">
+                                Phone Number
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center px-0">
+                <button type="submit" class="btn navbar-color text-white btn-secondary">Save</button>
+                <button type="button" class="btn cancel-btn-color ms-1 btn-outline-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+@using ToDoListManagement.Entity.ViewModel
+@model ToDoListManagement.Entity.ViewModel.EmployeeViewModel
+
+@{
+    ViewData["Title"] = "Add Employee";
+}
+
+<div class="container-fluid mt-2">
+
+    <div class="my-3">
+        <h2>Add Employee</h2>
+    </div>
+
+    <form method="post" asp-controller="Employee" asp-action="AddEmployee" enctype="multipart/form-data">
+        <div class="row mx-0">
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating">
+                    <input type="text" class="form-control " asp-for="Name" placeholder="name">
+                    <label for="floatingInput">Name*</label>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mt-3 ps-0 mt-3">
+                <div class="form-floating">
+                    <input type="text" class="form-control " asp-for="PhoneNumber" placeholder="name@example.com">
+                    <label for="floatingInput">Phone Number*</label>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mx-0">
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating">
+                    <input type="email" class="form-control " asp-for="Email"
+                        aria-describedby="emailHelp" placeholder="Email">
+                    <label for="floatingInput">Email*</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating">
+                    <input style="position: relative;" type="password" class="form-control "
+                        asp-for="Password" id="password" placeholder="abc@123">
+                    <i class="far fa-eye" id="togglePassword"
+                        style=" cursor: pointer; position: absolute;  right: 12px; margin-top: -37px;"></i>
+                    <label for="password" class="bg-transparent">Password*</label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mx-0">
+            <div class="col-lg-6 col-md-6 mt-3 ps-0">
+                <div class="form-floating ">
+                    <select class="form-select " style="height: 60px !important; cursor: pointer;" asp-for="Role">
+                        <option value="">Select a Role</option>
+                        @if(Model.Roles != null && Model.Roles.Count > 0)
+                        {
+                            @foreach (RoleViewModel? role in Model.Roles)
+                            {
+                                <option value="@role.RoleId">@role.RoleName</option>
+                            }
+                        }
+                    </select>
+                    <label class="fs-6" for="Country">Role*</label>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="create_cancel_btn d-flex py-3 ">
+            <button type="submit" class="btn bg-secondary align-items-center text-white me-2">Save</button>
+            <button onclick="PageReload()" type="button" class="btn border-secondary">Cancel</button>
+        </div>
+    </form>
+    
+</div>
+
+<script>
+    function PageReload() {
+        window.location.href = "/Employee/Index";
+    }
+
+    const passField = document.getElementById('password');
+    togglePassword.addEventListener('click', function (e) {
+        const type = passField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passField.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>

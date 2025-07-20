@@ -1,0 +1,35 @@
+@using ToDoListManagement.Entity.Constants
+@{
+    bool canAddEdit = GetPermissionService.HasPermission(User, Constants.ManageTeamModule, Constants.CanAddEdit);
+    bool canDelete = GetPermissionService.HasPermission(User, Constants.ManageTeamModule, Constants.CanDelete);
+}
+<table class="table table-striped projects" id="teamMembersTable">
+    <thead>
+        <tr>
+            <th>
+                Member Name
+            </th>
+            <th>
+                Reporting Person
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Role
+            </th>
+            <th>
+                Phone Number
+            </th>
+            <th>
+                Projects
+            </th>
+            @if (canAddEdit || canDelete)
+            {
+                <th>
+                    Actions
+                </th>
+            }
+        </tr>
+    </thead>
+</table>

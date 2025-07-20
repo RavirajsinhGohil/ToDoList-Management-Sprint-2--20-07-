@@ -1,0 +1,74 @@
+@using ToDoListManagement.Entity.ViewModel
+@model List<ToDoListManagement.Entity.ViewModel.TaskViewModel>
+
+@{
+    bool canAddEdit = GetPermissionService.HasPermission(User, "Task Board", "CanAddEdit");
+    bool canDelete = GetPermissionService.HasPermission(User, "Task Board", "CanDelete");
+}
+
+<table id="example2" class="table table-striped mb-3">
+    <thead>
+        <tr>
+            <th>Task Name</th>
+            <th>Assigned To</th>
+            <th>Priority</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any() && Model != null)
+        {
+            foreach (TaskViewModel? task in Model)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>
+                        @if (task.TeamMembers != null && task.TeamMembers.Any())
+                        {
+                            string? assignedTo = task.TeamMembers.FirstOrDefault(tm => tm.UserId ==
+                            task.AssignedTo)?.Name;
+                            @if (assignedTo != null)
+                            {
+                                <p class="mb-0">@assignedTo</p>
+                            }
+                            else
+                            {
+                                <p class="mb-0">Not Assigned</p>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <span>@task.Priority</span>
+                    </td>
+                    <td>
+                        <div>
+                            <a onclick="openViewTaskModal(@task.TaskId)" class="btn btn-secondary btn-sm text-white me-1"
+                                title="View">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            @if (canAddEdit)
+                            {
+                                <a onclick="openEditTaskModal(@task.TaskId)" class="btn btn-info btn-sm text-white me-1"
+                                    title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            }
+                            @if (canDelete)
+                            {
+                                <a onclick="openDeleteTaskModal(@task.TaskId)" class="btn btn-danger btn-sm" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No data available in table</td>
+            </tr>
+        }
+    </tbody>
+</table>
